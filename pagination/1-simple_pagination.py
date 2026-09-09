@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Module for simple pagination of a baby names dataset."""
+"""Module for simple pagination."""
 
 import csv
 import math
@@ -7,7 +7,7 @@ from typing import List, Tuple
 
 
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
-    """Calculate the start and end indexes for a pagination range."""
+    """Return the start and end indexes for a pagination range."""
     start_index = (page - 1) * page_size
     end_index = start_index + page_size
     return (start_index, end_index)
@@ -19,6 +19,7 @@ class Server:
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
+        """Initialize the dataset cache."""
         self.__dataset = None
 
     def dataset(self) -> List[List]:
@@ -33,14 +34,10 @@ class Server:
 
     def get_page(self, page: int = 1,
                  page_size: int = 10) -> List[List]:
-        """Return the appropriate page of the dataset."""
-        assert type(page) is int and page > 0
-        assert type(page_size) is int and page_size > 0
+        """Return a page from the dataset."""
+        assert isinstance(page, int) and isinstance(page_size, int)
+        assert page > 0 and page_size > 0
 
         start_index, end_index = index_range(page, page_size)
-        dataset = self.dataset()
-
-
-        return dataset[start_index:end_index]
-    
+        return self.dataset()[start_index:end_index]
     
