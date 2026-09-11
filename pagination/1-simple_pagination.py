@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Simple pagination module."""
+"""Simple pagination for a dataset of popular baby names."""
 
 import csv
 import math
-from typing import List
+from typing import List, Tuple
 
 
-def index_range(page: int, page_size: int) -> tuple:
-    """Return the start and end indexes for a page."""
-    start = (page - 1) * page_size
-    end = page * page_size
-    return (start, end)
+def index_range(page: int, page_size: int) -> Tuple[int, int]:
+    """Calculate the start and end indexes for a pagination range."""
+    start_index = (page - 1) * page_size
+    end_index = start_index + page_size
+    return (start_index, end_index)
 
 
 class Server:
@@ -18,11 +18,12 @@ class Server:
 
     DATA_FILE = "Popular_Baby_Names.csv"
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the server with no cached dataset."""
         self.__dataset = None
 
     def dataset(self) -> List[List]:
-        """Cached dataset."""
+        """Return the cached dataset without the header row."""
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
@@ -31,16 +32,11 @@ class Server:
 
         return self.__dataset
 
-    def get_page(self, page: int = 1,
-                 page_size: int = 10) -> List[List]:
+    def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         """Return the requested page of the dataset."""
-        assert isinstance(page, int) and page > 0
-        assert isinstance(page_size, int) and page_size > 0
+        assert type(page) is int and page > 0
+        assert type(page_size) is int and page_size > 0
 
-        start, end = index_range(page, page_size)
-
-        if start >= len(self.dataset()):
-            return []
-
-        return self.dataset()[start:end]
+        start_index, end_index = index_range(page, page_size)
+        return self.dataset()[start_index:end_index]
     
